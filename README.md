@@ -33,7 +33,10 @@ my_session.connect()
 
 # Run the query and display result to stdout
 subnets = my_session.get_subnets()
-print json.dumps(json.loads(subnets), indent=4)
+if subnets:   # Ensures the data is valid
+    print json.dumps(json.loads(subnets), indent=4)
+else:
+    print "No data received"
 
 # Finish the session
 ipam.close()
