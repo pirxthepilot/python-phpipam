@@ -10,7 +10,8 @@ import re
 
 class PhpIpam:
 
-    def __init__(self, ipam_baseurl, ipam_id, ipam_user, ipam_pw, ca_cert=None):
+    def __init__(self, ipam_baseurl, ipam_id, ipam_user, ipam_pw,
+                 ca_cert=None):
         self.ipam_root = ipam_baseurl + '/api/' + ipam_id
         self.ipam_id = ipam_id
         self.ipam_user = ipam_user
@@ -50,11 +51,42 @@ class PhpIpam:
                        '/subnets/')
         return self.proper_output(req)
 
+    def get_subnet_id(self, subnet):
+        req = self.get('/subnets/cidr/' + subnet)
+        if self.proper_output(req):
+            return req['data'][0]['id']
+        else:
+            return False
+
+    def get_subnet_info(self, subnet):
+        subnet_id = self.get_subnet_id(subnet)
+        if subnet_id:
+            req = self.get('/subnets/' + subnet_id + '/')
+            return self.proper_output(req)
+
+    def get_subnet_usage(self, subnet):
+        subnet_id = self.get_subnet_id(subnet)
+        if subnet_id:
+            req = self.get('/subnets/' + subnet_id +
+                           '/usage/')
+            return self.proper_output(req)
+
+    def get_subnet_firstfree(self, subnet):
+        subnet_id = self.get_subnet_id(subnet)
+        if subnet_id:
+            req = self.get('/subnets/' + subnet_id +
+                           '/first_free/')
+            req_dict = { "code": req['code'],
+                         "data": { "first_free": req['data'] }
+                       }
+            return self.proper_output(req_dict)
+
     def get_addresses(self, subnet):
-        subnet_id = (self.get('/subnets/cidr/' + subnet))['data'][0]['id']
-        req = self.get('/subnets/' + subnet_id +
-                       '/addresses/')
-        return self.proper_output(req)
+        subnet_id = self.get_subnet_id(subnet)
+        if subnet_id:
+            req = self.get('/subnets/' + subnet_id +
+                           '/addresses/')
+            return self.proper_output(req)
 
     def get_address_info(self, address):
         req = self.get('/addresses/search/' + address + '/')
