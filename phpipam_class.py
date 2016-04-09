@@ -2,6 +2,7 @@
 # Handy module for querying the phpipam API
 
 import requests
+import urllib
 import json
 import sys
 import re
@@ -38,7 +39,7 @@ class PhpIpam:
                                verify=self.verify).text
 
     def get(self, query):
-        response = requests.get(self.ipam_root + query,
+        response = requests.get(self.ipam_root + urllib.quote(query),
                                 headers=self.headers,
                                 verify=self.verify)
         self.http_error_check(response)
