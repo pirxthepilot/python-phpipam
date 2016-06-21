@@ -9,7 +9,7 @@ This python package provides the `PhpIpam` class for use to query the phpipam AP
 
    ```
    # yum install gcc python-devel python-pip python-requests libffi-devel
-   # pip install urllib3 pyopenssl requests[security] --upgrade
+   # pip install -r requirements.txt
    ```
 
 ### Notes
