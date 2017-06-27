@@ -1,6 +1,8 @@
 # PHPIPAM Module
 # Handy module for querying the phpipam API
 
+from __future__ import absolute_import, division, print_function
+
 import requests
 import urllib
 import json
@@ -27,7 +29,7 @@ class PhpIpam:
         except (requests.exceptions.ConnectionError,
                 requests.exceptions.Timeout,
                 requests.exceptions.TooManyRedirects) as e:
-            print 'requests error: ' + str(e)
+            print('requests error: ' + str(e))
             sys.exit(1)
         self.http_error_check(req_auth, exit_on_404=True)
         self.token = req_auth.json()['data']['token']
@@ -40,7 +42,7 @@ class PhpIpam:
                                verify=self.verify).text
 
     def get(self, query):
-        response = requests.get(self.ipam_root + urllib.quote(query),
+        response = requests.get(self.ipam_root + urllib.parse.quote(query),
                                 headers=self.headers,
                                 verify=self.verify)
         self.http_error_check(response)
@@ -98,7 +100,7 @@ class PhpIpam:
         except requests.exceptions.HTTPError as e:
             # By default, do not treat 404 as an error
             if re.match('404', str(e)) is None:
-                print str(e) + ' - ' + (response.json())['message']
+                print(str(e) + ' - ' + (response.json())['message'])
                 sys.exit(1)
             else:
                 if exit_on_404:
